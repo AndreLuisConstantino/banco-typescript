@@ -3,7 +3,7 @@ import { Router } from "express";
 
 //import para as rotas
 const routes = Router();
-var message = require('./controller/modulo/config')
+var message = require("./controller/modulo/config");
 
 //import do cors
 /* 
@@ -39,42 +39,62 @@ routes.use((request, response, next) => {
 
 const bodyParserJSON = bodyParser.json();
 
-import { 
-    selectAllUsers,
-    insertUser,
-    selectUserById
+import {
+  selectAllUsers,
+  insertUser,
+  selectUserById,
+  selectUserByTag,
 } from "./controller/userControler";
 
 routes.get("/usuario", cors(), async (request, response): Promise<void> => {
-  const usuarios = await selectAllUsers();
+  let tagDeUsuario = request.query.tag;
 
-  response.status(usuarios.status);
-  response.json(usuarios);
+  if (tagDeUsuario != undefined) {
+    let usuario = await selectUserByTag(String(tagDeUsuario));
+
+    response.status(usuario.status);
+    response.json(usuario);
+  } else {
+    const usuarios = await selectAllUsers();
+
+    response.status(usuarios.status);
+    response.json(usuarios);
+  }
 });
 
 routes.get("/usuario/:id", cors(), async (request, response): Promise<void> => {
-    let id = request.params.id
+  let id = request.params.id;
 
-    let usuario = await selectUserById(id)
+  let usuario = await selectUserById(id);
 
-    response.status(usuario.status)
-    response.json(usuario)
-})
+  response.status(usuario.status);
+  response.json(usuario);
+});
+
+// routes.get("/usuario/:tag", cors(),async (request, response): Promise<void> => {
+//     let tagDeUsuario = request.params.tag
+
+//     let usuario = await selectUserByTag(tagDeUsuario)
+
+//     response.status(usuario.status)
+//     response.json(usuario)
+// })
 
 routes.post("/usuario", cors(), bodyParserJSON, async (request, response): Promise<void> => {
-    let contentType = request.headers['content-type']
+    let contentType = request.headers["content-type"];
 
-    if (String(contentType).toLowerCase() == 'application/json'){
-        let dadosBody = request.body
+    if (String(contentType).toLowerCase() == "application/json") {
+      let dadosBody = request.body;
 
-        let resultDadosUser = await insertUser(dadosBody)
+      let resultDadosUser = await insertUser(dadosBody);
 
-        response.status(resultDadosUser.status)
-        response.json(resultDadosUser)
+      response.status(resultDadosUser.status);
+      response.json(resultDadosUser);
     } else {
-        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
-        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+      response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+      response.json(message.ERROR_INVALID_CONTENT_TYPE);
     }
-});
+  }
+);
 
 export default routes;

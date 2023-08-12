@@ -27,6 +27,18 @@ export const mldSelectUserById = async (id: any) => {
     }
 }
 
+export const mdlSelectUserByTag = async (tag: string) => {
+  let sql = `select * from tbl_usuario where tag_de_usuario = '${tag}'`
+
+  let resultUser = await prisma.$queryRawUnsafe(sql)
+
+  if (resultUser.length > 0) {
+    return resultUser
+  } else {
+    return false
+  }
+}
+
 export const mdlInsertUser = async (dadosUser: any) => {
   let sql = `insert into tbl_usuario 
                             (
