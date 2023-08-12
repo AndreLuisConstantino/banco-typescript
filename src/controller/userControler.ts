@@ -4,6 +4,7 @@ import {
   mdlSelectLastID,
   mldSelectUserById,
   mdlSelectUserByTag,
+  mdlUpdateUser
 } from "../model/DAO/userDAO";
 
 // var message = require('./modulo/config.ts')
@@ -86,7 +87,7 @@ export const insertUser = async (dadosUsers: any) => {
     return ERROR_REQUIRED_FIELDS;
   } else {
     let resultTag = selectUserByTag(dadosUsers.tag_de_usuario);
-    
+
     if ((await resultTag).status == 200) {
       return ERROR_EXISTING_TAG;
     } else {
@@ -126,6 +127,49 @@ export const selectUserByTag = async (tag: string) => {
         usuario: dadosUsuario,
       };
       return usuario;
+    } else {
+      return ERROR_ITEM_NOT_FOUND;
+    }
+  }
+};
+
+export const updateUser = async (dadosUser: any, id: string) => {
+  interface User {
+    message: string;
+    status: number;
+    usuario: Object;
+  }
+
+  if (
+    dadosUser.nome == "" ||
+    dadosUser.nome == undefined ||
+    dadosUser.length > 255 ||
+    dadosUser.tag_de_usuario == "" ||
+    dadosUser.tag_de_usuario == undefined ||
+    dadosUser.length > 255
+  ) {
+    return ERROR_REQUIRED_FIELDS;
+  } else if (id == undefined || id == "" || isNaN(Number(id))) {
+    return ERROR_INVALID_ID;
+  } else {
+    dadosUser.id = Number(id);
+
+    let resultId = await selectUserById(Number(id));
+
+    if (resultId) {
+      let resultDadosUser = await mdlUpdateUser(dadosUser);
+
+      if (resultDadosUser) {
+        let novoUser = await selectUserById(Number(id));
+        let usuario: User = {
+          message: SUCCESS_UPDATED_ITEM.message,
+          status: SUCCESS_UPDATED_ITEM.status,
+          usuario: novoUser,
+        };
+        return usuario;
+      } else {
+        return ERROR_INTERNAL_SERVER;
+      }
     } else {
       return ERROR_ITEM_NOT_FOUND;
     }

@@ -44,6 +44,7 @@ import {
   insertUser,
   selectUserById,
   selectUserByTag,
+  updateUser,
 } from "./controller/userControler";
 
 routes.get("/usuario", cors(), async (request, response): Promise<void> => {
@@ -80,13 +81,36 @@ routes.get("/usuario/:id", cors(), async (request, response): Promise<void> => {
 //     response.json(usuario)
 // })
 
-routes.post("/usuario", cors(), bodyParserJSON, async (request, response): Promise<void> => {
+routes.post(
+  "/usuario",
+  cors(),
+  bodyParserJSON,
+  async (request, response): Promise<void> => {
     let contentType = request.headers["content-type"];
 
     if (String(contentType).toLowerCase() == "application/json") {
       let dadosBody = request.body;
 
       let resultDadosUser = await insertUser(dadosBody);
+
+      response.status(resultDadosUser.status);
+      response.json(resultDadosUser);
+    } else {
+      response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+      response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
+  }
+);
+
+routes.put("/usuario/:id", cors(), bodyParserJSON, async (request, response): Promise<void> => {
+    let contentType = request.headers["content-type"];
+
+    if (String(contentType).toLowerCase() == "application/json") {
+        let id = request.params.id
+    
+      let dadosBody = request.body;
+
+      let resultDadosUser = await updateUser(dadosBody, id);
 
       response.status(resultDadosUser.status);
       response.json(resultDadosUser);
