@@ -80,6 +80,18 @@ export const mdlUpdateUser = async (dadosUser: any) => {
   }
 };
 
+export const mdlDeleteUser = async (id: number) => {
+  
+  let sql = `delete from tbl_usuario where id = ${id}`
+
+  let resultStatus = await prisma.$executeRawUnsafe(sql)
+
+  if (resultStatus)
+    return  true
+  else 
+    return false
+}
+
 export const mdlSelectLastID = async function () {
   let sql = `select * from tbl_usuario order by id desc limit 1;`;
 

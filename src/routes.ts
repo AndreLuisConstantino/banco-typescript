@@ -45,6 +45,7 @@ import {
   selectUserById,
   selectUserByTag,
   updateUser,
+  deleteUser
 } from "./controller/userControler";
 
 routes.get("/usuario", cors(), async (request, response): Promise<void> => {
@@ -106,7 +107,7 @@ routes.put("/usuario/:id", cors(), bodyParserJSON, async (request, response): Pr
     let contentType = request.headers["content-type"];
 
     if (String(contentType).toLowerCase() == "application/json") {
-        let id = request.params.id
+      let id = request.params.id
     
       let dadosBody = request.body;
 
@@ -120,5 +121,14 @@ routes.put("/usuario/:id", cors(), bodyParserJSON, async (request, response): Pr
     }
   }
 );
+
+routes.delete("/usuario/:id", cors(), bodyParserJSON, async (request, response) => {
+    let id = request.params.id
+
+    let result = await deleteUser(Number(id))
+
+    response.status(result.status)
+    response.json(result)
+})
 
 export default routes;

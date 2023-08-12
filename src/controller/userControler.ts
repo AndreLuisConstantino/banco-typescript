@@ -4,7 +4,8 @@ import {
   mdlSelectLastID,
   mldSelectUserById,
   mdlSelectUserByTag,
-  mdlUpdateUser
+  mdlUpdateUser,
+  mdlDeleteUser
 } from "../model/DAO/userDAO";
 
 // var message = require('./modulo/config.ts')
@@ -175,3 +176,26 @@ export const updateUser = async (dadosUser: any, id: string) => {
     }
   }
 };
+
+
+export const deleteUser = async (id: number) => {
+    
+    if (id == null || id == undefined || String(id) == '' || isNaN(id)) {
+        return ERROR_REQUIRED_FIELDS
+    } else {
+        let idUser = await selectUserById(id)
+
+        if (idUser) {
+            let result = await mdlDeleteUser(id)
+
+            if (result) {
+                return SUCCESS_DELETED_ITEM
+            } else {
+                return ERROR_DELETED_ITEM
+            }
+
+        } else {
+            return ERROR_ITEM_NOT_FOUND
+        }
+    }
+}
