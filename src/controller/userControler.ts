@@ -1,58 +1,99 @@
 import { 
-    selectAllUsers, 
-    insertUser,
-    selectLastID    
+    mdlInsertUser,
+    mdlSelectAllUsers,
+    mdlSelectLastID,
+    mldSelectUserById
 } from "../model/DAO/userDAO"
-var message = require('./modulo/config.ts')
 
-export const mdlSelectAllUsers = async function () {
+// var message = require('./modulo/config.ts')
+
+import {
+    ERROR_REQUIRED_FIELDS,
+    ERROR_MISTAKE_IN_THE_FILDS,
+    ERROR_INTERNAL_SERVER, 
+    ERROR_INVALID_CONTENT_TYPE,
+    ERROR_INVALID_ID,
+    ERROR_DELETED_ITEM,
+    ERROR_ITEM_NOT_FOUND,
+    SUCCESS_CREATED_ITEM,
+    SUCCESS_UPDATED_ITEM,
+    SUCCESS_DELETED_ITEM,
+    SUCCES_REQUEST
+} from "./modulo/config"
+
+export const selectAllUsers = async () => {
     interface Users  {
-        status: Number,
-        quantidade: Number,
+        status: number,
+        quantidade: number,
         usuarios: Object    
     }
 
-    let dadosUsers = await selectAllUsers()
+    let dadosUsers = await mdlSelectAllUsers()
 
     if (dadosUsers) {
         let dadosUsuarios: Users = {
-            status: message.SUCCES_REQUEST.status,
+            status: SUCCES_REQUEST.status,
             quantidade: dadosUsers.length,
             usuarios: dadosUsers
         }
         return dadosUsuarios
     } else {
-        return message.ERROR_ITEM_NOT_FOUND
+        return ERROR_ITEM_NOT_FOUND
     }
 }
 
-export const mdlInsertUser = async (dadosUsers: any) => {
+export const selectUserById = async (id: any) => {
+    
+    if (id == undefined || id == '' || isNaN(id)) {
+        return ERROR_INVALID_ID
+    } else {
+
+        interface User {
+            status: number,
+            usuario: Object
+        }
+
+        let dadosUsuario = await mldSelectUserById(id)
+
+        if (dadosUsuario) {
+            let usuario: User = {
+                status: SUCCES_REQUEST.status,
+                usuario: dadosUsuario
+            } 
+            return usuario
+        } else {
+            return ERROR_ITEM_NOT_FOUND
+        }
+    }
+}
+
+export const insertUser = async (dadosUsers: any) => {
     
     interface User {
         message: string,
-        status: Number,
+        status: number,
         usuario: Object
     }
 
     if (dadosUsers.nome == '' || dadosUsers.nome == undefined || dadosUsers.length > 255 || 
         dadosUsers.tag_de_usuario == '' || dadosUsers.tag_de_usuario == undefined || dadosUsers > 255
     ) {
-        return message.ERROR_REQUIRED_FIELDS
+        return ERROR_REQUIRED_FIELDS
     } else {
-        let resultDadosUser = await insertUser(dadosUsers)
+        let resultDadosUser = await mdlInsertUser(dadosUsers)
 
         if(resultDadosUser) {
-            let novoUser = await selectLastID()
+            let novoUser = await mdlSelectLastID()
 
             let dadosUsers: User = {
-                message: message.SUCCESS_CREATED_ITEM.message,
-                status: message.SUCCESS_CREATED_ITEM.status,
+                message: SUCCESS_CREATED_ITEM.message,
+                status: SUCCESS_CREATED_ITEM.status,
                 usuario: novoUser
             }
 
             return dadosUsers
         } else {
-            return message.ERROR_INTERNAL_SERVER
+            return ERROR_INTERNAL_SERVER
         }
     }
 }

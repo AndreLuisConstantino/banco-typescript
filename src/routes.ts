@@ -3,7 +3,7 @@ import { Router } from "express";
 
 //import para as rotas
 const routes = Router();
-var message = require('./controller/modulo/config.ts')
+var message = require('./controller/modulo/config')
 
 //import do cors
 /* 
@@ -40,18 +40,26 @@ routes.use((request, response, next) => {
 const bodyParserJSON = bodyParser.json();
 
 import { 
-    mdlSelectAllUsers,
-    mdlInsertUser
+    selectAllUsers,
+    insertUser,
+    selectUserById
 } from "./controller/userControler";
 
 routes.get("/usuario", cors(), async (request, response): Promise<void> => {
-  const usuarios = await mdlSelectAllUsers();
+  const usuarios = await selectAllUsers();
 
   response.status(usuarios.status);
   response.json(usuarios);
 });
 
+routes.get("/usuario/:id", cors(), async (request, response): Promise<void> => {
+    let id = request.params.id
 
+    let usuario = await selectUserById(id)
+
+    response.status(usuario.status)
+    response.json(usuario)
+})
 
 routes.post("/usuario", cors(), bodyParserJSON, async (request, response): Promise<void> => {
     let contentType = request.headers['content-type']
@@ -59,7 +67,7 @@ routes.post("/usuario", cors(), bodyParserJSON, async (request, response): Promi
     if (String(contentType).toLowerCase() == 'application/json'){
         let dadosBody = request.body
 
-        let resultDadosUser = await mdlInsertUser(dadosBody)
+        let resultDadosUser = await insertUser(dadosBody)
 
         response.status(resultDadosUser.status)
         response.json(resultDadosUser)

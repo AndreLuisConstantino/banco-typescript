@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const routes_1 = __importDefault(require("./routes"));
 // const express = require('express')
+//yarn dev:server para rodar o servidor
 const app = (0, express_1.default)();
-app.get('/', (req, res) => {
-    return res.send('Hello world');
-});
-app.listen(3333);
+app.use(routes_1.default);
+app.listen(3333, () => console.log('Servidor rodando na porta 3333'));

@@ -3,9 +3,8 @@
 * Data: 28/04/2023
 * Autor: André
 * Versão: 1.1
-******************************************************************************/
-
 /******************************** MENSAGENS DE ERRO **********************************************/
+
 const ERROR_REQUIRED_FIELDS = {status: 400, message: 'Campos obrigatórios não foram preenchidos.'}
 
 const ERROR_MISTAKE_IN_THE_FILDS = {status: 400, message: 'Campos obrigatórios foram preenchidos errado.'}
@@ -29,18 +28,31 @@ const SUCCESS_DELETED_ITEM = {status: 200, message: 'Item excluido com sucesso.'
 
 const SUCCES_REQUEST = {status: 200, message: 'Requisição bem secedida'}
 
-
-
-module.exports = {
+export { 
     ERROR_REQUIRED_FIELDS,
-    ERROR_INTERNAL_SERVER,
-    SUCCESS_CREATED_ITEM,
     ERROR_MISTAKE_IN_THE_FILDS,
-    ERROR_INVALID_ID,
-    SUCCESS_UPDATED_ITEM,
+    ERROR_INTERNAL_SERVER, 
     ERROR_INVALID_CONTENT_TYPE,
-    SUCCESS_DELETED_ITEM,
+    ERROR_INVALID_ID,
     ERROR_DELETED_ITEM,
     ERROR_ITEM_NOT_FOUND,
+    SUCCESS_CREATED_ITEM,
+    SUCCESS_UPDATED_ITEM,
+    SUCCESS_DELETED_ITEM,
     SUCCES_REQUEST
 }
+
+
+// module.exports = {
+//     ERROR_REQUIRED_FIELDS,
+//     ERROR_INTERNAL_SERVER,
+//     SUCCESS_CREATED_ITEM,
+//     ERROR_MISTAKE_IN_THE_FILDS,
+//     ERROR_INVALID_ID,
+//     SUCCESS_UPDATED_ITEM,
+//     ERROR_INVALID_CONTENT_TYPE,
+//     SUCCESS_DELETED_ITEM,
+//     ERROR_DELETED_ITEM,
+//     ERROR_ITEM_NOT_FOUND,
+//     SUCCES_REQUEST
+// }

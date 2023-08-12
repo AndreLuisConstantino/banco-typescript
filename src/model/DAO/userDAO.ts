@@ -3,7 +3,7 @@ var { PrismaClient } = require("@prisma/client");
 
 var prisma = new PrismaClient();
 
-export const selectAllUsers = async function () {
+export const mdlSelectAllUsers = async function () {
   let sql = `select * from tbl_usuario`;
 
   let resultUser = await prisma.$queryRawUnsafe(sql);
@@ -15,7 +15,19 @@ export const selectAllUsers = async function () {
   }
 };
 
-export const insertUser = async (dadosUser: any) => {
+export const mldSelectUserById = async (id: any) => {
+    let sql = `select * from tbl_usuario where id = ${id}`
+
+    let resultUser = await prisma.$queryRawUnsafe(sql)
+
+    if (resultUser.length > 0) {
+      return resultUser
+    } else {
+      return false
+    }
+}
+
+export const mdlInsertUser = async (dadosUser: any) => {
   let sql = `insert into tbl_usuario 
                             (
                             nome, 
@@ -35,7 +47,7 @@ export const insertUser = async (dadosUser: any) => {
   }
 };
 
-export const selectLastID = async function () {
+export const mdlSelectLastID = async function () {
 
     let sql = `select * from tbl_usuario order by id desc limit 1;`
 
